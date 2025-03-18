@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 set -e  # Exit on error
 
 exec > /var/log/user-data.log 2>&1  # Redirect output for debugging
@@ -28,6 +28,15 @@ sudo systemctl start docker
 # Add 'jenkins' user to 'docker' group
 echo "Adding Jenkins user to Docker group..."
 sudo usermod -aG docker jenkins || true  # Ignore error if user doesn't exist yet
+
+echo "Installing kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm -f kubectl
+
+# Verify kubectl installation
+echo "Verifying kubectl installation..."
+kubectl version --client
 
 echo "Installing Jenkins..."
 sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
