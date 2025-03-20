@@ -58,4 +58,9 @@ module "eks" {
 
 resource "aws_cloudwatch_log_group" "this" {
   name = "/aws/eks/my-eks-cluster/cluster"
+
+  lifecycle {
+    ignore_changes = [name]
+  }
 }
+
