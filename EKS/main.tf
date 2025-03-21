@@ -22,11 +22,10 @@ module "vpc" {
     "kubernetes.io/role/elb"               = "true"
   }
 
-  private_subnet_tags = { # This must be outside of public_subnet_tags
+  private_subnet_tags = {
     "kubernetes.io/cluster/my-eks-cluster" = "shared"
     "kubernetes.io/role/internal-elb"      = "true"
   }
-
 }
 
 module "eks" {
@@ -54,4 +53,64 @@ module "eks" {
     Environment = "dev"
     Terraform   = "true"
   }
+}
+
+resource "aws_iam_role" "mahmoodi_eks_role" {
+  name = "mahmoodi-eks-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${var.account_id}:user/Mahmoodi"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "eks_admin_policy" {
+  name        = "eks-admin-policy"
+  description = "Policy for Mahmoodi to manage Kubernetes and run Nginx"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "eks:DescribeCluster",
+        "eks:ListClusters",
+        "eks:DescribeNodegroup",
+        "eks:ListNodegroups",
+        "eks:AccessKubernetesApi",
+        "eks:ListUpdates",
+        "eks:UpdateClusterConfig",
+        "eks:UpdateNodegroupConfig"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
+  policy_arn = aws_iam_policy.eks_admin_policy.arn
+  role       = aws_iam_role.mahmoodi_eks_role.name
 }
