@@ -15,3 +15,8 @@ variable "public_subnets" {
   type        = list(string)
 
 }
+
+variable "account_id" {
+  description = "AWS Account ID"
+  type        = string
+}
