@@ -33,7 +33,7 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
-  cluster_version = "1.22"  # Update to a valid Kubernetes version
+  cluster_version = "1.31"  # Update to a valid Kubernetes version
 
   cluster_endpoint_public_access = true
 
