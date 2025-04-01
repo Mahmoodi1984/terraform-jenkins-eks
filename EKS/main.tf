@@ -33,7 +33,7 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
-  cluster_version = "1.22"  # Update to a valid Kubernetes version (1.22, 1.23, or 1.24)
+  cluster_version = "1.22"  # Update to a valid Kubernetes version
 
   cluster_endpoint_public_access = true
 
@@ -46,21 +46,22 @@ module "eks" {
       max_size      = 3
       desired_size  = 2
       instance_type = ["t2.small"]
+
+      # Tags for node group
+      tags = {
+        Environment = "dev"
+        Terraform   = "true"
+      }
     }
   }
 
-  tags = {
+  # Tags for the cluster
+  cluster_tags = {
     Environment = "dev"
     Terraform   = "true"
   }
 }
 
-
-  tags = {
-    Environment = "dev"
-    Terraform   = "true"
-  }
-}
 
 resource "aws_iam_role" "mahmoodi_eks_role" {
   name = "mahmoodi-eks-role"
