@@ -11,9 +11,7 @@ this project has two phases:
    1.3- push the code on Gihtub
    1.4- Create jenkins pipeline to EKS cluster
    1.5- Deploy the changes to AWS
-   1.6- Implement a deployment file with heilp of kubctl which deploy an inginx application on our eks cluster
-        will be accessing to particular application with the help of load balancer.
-
-
 2-I created one directory and inside that I have created to more directories one for Jenkins server and one for EKS.
    2.1- inside the jenkins-server directory I created main.tf to define my
+   2.2- at the end I created the pipeline using Terraform(IaC) and used jenkins for our pipeline to create our cluster in AWS.
+   you can see all photos of my project in my website: www.mahmoodi-tech.cloud

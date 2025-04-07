@@ -33,6 +33,7 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
+
   cluster_version = "1.29" # ✅ Fixed
 
   cluster_endpoint_public_access = true
@@ -45,15 +46,27 @@ module "eks" {
       min_size      = 1
       max_size      = 3
       desired_size  = 2
+ HEAD
       instance_type = "t2.small" # ✅ Fixed
+
+      instance_type = ["t2.small"]
+
+      # Tags for node group
+      tags = {
+        Environment = "dev"
+        Terraform   = "true"
+      }
+
     }
   }
 
-  tags = {
+  # Tags for the cluster
+  cluster_tags = {
     Environment = "dev"
     Terraform   = "true"
   }
 }
+
 
 resource "aws_iam_role" "mahmoodi_eks_role" {
   name = "mahmoodi-eks-role"
