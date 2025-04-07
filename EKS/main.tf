@@ -46,7 +46,6 @@ module "eks" {
       min_size      = 1
       max_size      = 3
       desired_size  = 2
- HEAD
       instance_type = "t2.small" # ✅ Fixed
 
       instance_type = ["t2.small"]
