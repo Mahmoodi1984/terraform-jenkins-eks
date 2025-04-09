@@ -4,7 +4,7 @@ datePublished: Fri Mar 07 2025 07:35:37 GMT+0000 (Coordinated Universal Time)
 cuid: cm7ygo5p7000g09l8b4o53wdq
 slug: devops-and-ci-cd
 ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1741473539765/aab90a29-4bbe-4dd0-b66f-ef87ef40f76a.webp
-tags: lambda, apis, terraform, infrastructure-as-code
+tags: lambda, apis, terraform, infrastructure-as-code, my-projects
 
 ---
 
