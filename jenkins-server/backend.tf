@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "mahmoodi-tech.de"
+    bucket = "backend-logs-eks"
     key    = "jenkins/terraform.tfstate"
     region = "eu-central-1"
   }
