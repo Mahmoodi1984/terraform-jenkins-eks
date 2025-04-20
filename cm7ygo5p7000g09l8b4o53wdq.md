@@ -1,5 +1,5 @@
 ---
-title: "AWS Projects"
+title: "Serverless API with AWS Lambda and API Gateway"
 datePublished: Fri Mar 07 2025 07:35:37 GMT+0000 (Coordinated Universal Time)
 cuid: cm7ygo5p7000g09l8b4o53wdq
 slug: my-projects
