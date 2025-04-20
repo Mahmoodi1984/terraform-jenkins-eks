@@ -3,6 +3,7 @@ title: "DevOps CI/CD-Pipeline"
 datePublished: Sat Apr 19 2025 21:20:26 GMT+0000 (Coordinated Universal Time)
 cuid: cm9oq2ip0000109jr68upcwlp
 slug: devops-cicd-pipeline
+canonical: https://hashnode.com/post/cm7ygo5p7000g09l8b4o53wdqh.cloud/my-projects
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1745089608143/5e14031c-6a26-4d89-9ff1-b9e2cf811669.png
 ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1745097594133/a8c4c3aa-d5cb-48b4-a6f0-f5f7cb735527.png
 tags: docker, aws, sonarqube, jenkins, ci-cd, devops-articles
