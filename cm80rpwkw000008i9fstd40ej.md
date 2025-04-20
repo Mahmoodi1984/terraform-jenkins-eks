@@ -2,7 +2,7 @@
 title: "Serverless API with AWS Lambda and API Gateway"
 datePublished: Sat Mar 08 2025 22:20:27 GMT+0000 (Coordinated Universal Time)
 cuid: cm80rpwkw000008i9fstd40ej
-slug: serverless-api-with-aws-lambda-and-api-gateway
+slug: devops-and-ci-cd
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1741468100840/4b149666-06dd-4a47-911f-6f4349a1e134.webp
 
 ---
