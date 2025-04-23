@@ -1,3 +1,31 @@
+terraform {
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14.0"
+    }
+  }
+}
+
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
+}
+
+resource "kubectl_manifest" "aws_auth_configmap" {
+  yaml_body = file("${path.module}/aws_auth_configmap.yaml")
+}
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -33,8 +61,7 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
-
-  cluster_version = "1.29" # ✅ Fixed
+  cluster_version = "1.29"
 
   cluster_endpoint_public_access = true
 
@@ -46,26 +73,20 @@ module "eks" {
       min_size      = 1
       max_size      = 3
       desired_size  = 2
-      instance_type = "t2.small" # ✅ Fixed
-
       instance_type = ["t2.small"]
 
-      # Tags for node group
       tags = {
         Environment = "dev"
         Terraform   = "true"
       }
-
     }
   }
 
-  # Tags for the cluster
   cluster_tags = {
     Environment = "dev"
     Terraform   = "true"
   }
 }
-
 
 resource "aws_iam_role" "Terraform_eks_role" {
   name = "mahmoodi-eks-role"
@@ -125,23 +146,4 @@ EOF
 resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
   policy_arn = aws_iam_policy.eks_admin_policy.arn
   role       = aws_iam_role.Terraform_eks_role.name
-}
-
-provider "kubectl" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
-}
-
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
-resource "kubectl_manifest" "aws_auth_configmap" {
-  yaml_body = file("${path.module}/aws_auth_configmap.yaml")
 }
