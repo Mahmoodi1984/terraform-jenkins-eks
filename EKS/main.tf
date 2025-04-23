@@ -67,7 +67,7 @@ module "eks" {
 }
 
 
-resource "aws_iam_role" "mahmoodi_eks_role" {
+resource "aws_iam_role" "Terraform_eks_role" {
   name = "mahmoodi-eks-role"
 
   assume_role_policy = <<EOF
@@ -88,7 +88,7 @@ EOF
 
 resource "aws_iam_policy" "eks_admin_policy" {
   name        = "eks-admin-policy"
-  description = "Policy for Mahmoodi to manage Kubernetes and run Nginx"
+  description = "Policy for Terraform to manage Kubernetes and run Nginx"
 
   policy = <<EOF
 {
@@ -124,5 +124,5 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
   policy_arn = aws_iam_policy.eks_admin_policy.arn
-  role       = aws_iam_role.mahmoodi_eks_role.name
+  role       = aws_iam_role.Terraform_eks_role.name
 }
