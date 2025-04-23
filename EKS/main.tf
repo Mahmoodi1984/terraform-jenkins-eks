@@ -126,3 +126,22 @@ resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
   policy_arn = aws_iam_policy.eks_admin_policy.arn
   role       = aws_iam_role.Terraform_eks_role.name
 }
+
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
+}
+
+resource "kubectl_manifest" "aws_auth_configmap" {
+  yaml_body = file("${path.module}/aws_auth_configmap.yaml")
+}
