@@ -4,8 +4,14 @@ metadata:
   name: aws-auth
   namespace: kube-system
 data:
-  mapUsers: |
-    - userarn: arn:aws:iam::767397667940:user/Terraform
-      username: Terraform
+  mapRoles: |
+    - rolearn: arn:aws:iam::767397667940:role/mahmoodi-eks-role
+      username: eks-admin
       groups:
         - system:masters
+  mapUsers: |
+    - userarn: arn:aws:iam::767397667940:user/Terraform
+      username: terraform
+      groups:
+        - system:masters
+
