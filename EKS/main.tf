@@ -22,9 +22,6 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
 }
 
-resource "kubectl_manifest" "aws_auth_configmap" {
-  yaml_body = file("${path.module}/aws_auth_configmap.yaml")
-}
 
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
