@@ -14,17 +14,13 @@ provider "kubectl" {
   load_config_file       = false
 }
 
-
-
-
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "jenkins-vpc"
   cidr = var.vpc_cidr
 
-  azs = data.aws_availability_zones.azs.names
-
+  azs             = data.aws_availability_zones.azs.names
   private_subnets = var.private_subnets
   public_subnets  = var.public_subnets
 
@@ -52,7 +48,7 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
-  cluster_version = "1.29"
+  cluster_version = "1.29" # You can change to 1.31 if you want, but ensure your region supports it
 
   cluster_endpoint_public_access = true
 
@@ -79,6 +75,24 @@ module "eks" {
   }
 }
 
+module "eks_aws_auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  version = "~> 20.31"
+
+  depends_on = [module.eks]
+
+  manage_aws_auth_configmap = true
+
+  aws_auth_users = [
+    {
+      userarn  = "arn:aws:iam::767397667940:user/Mahmoodi"
+      username = "mahmoodi"
+      groups   = ["system:masters"]
+    }
+  ]
+}
+
+# Optional: EKS admin role and policy (you can remove if not used)
 resource "aws_iam_role" "Terraform_eks_role" {
   name = "mahmoodi-eks-role"
 
