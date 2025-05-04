@@ -18,7 +18,7 @@ echo "Installing Amazon Corretto 17..."
 sudo yum install -y java-17-amazon-corretto
 
 echo "Installing dependencies..."
-sudo yum install -y git wget unzip
+sudo yum install -y git wget unzip curl
 
 echo "Installing Docker..."
 sudo yum install -y docker
@@ -34,15 +34,24 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 rm -f kubectl
 
-# Verify kubectl installation
 echo "Verifying kubectl installation..."
-kubectl version --client
+kubectl version --client || true
+
+echo "Installing Terraform..."
+TERRAFORM_VERSION="1.8.2"
+cd /tmp
+curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+echo "Verifying Terraform installation..."
+terraform -version || true
 
 echo "Installing Jenkins..."
 sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
 
-# Wait for yum lock to release before installing Jenkins
 while sudo fuser /var/run/yum.pid >/dev/null 2>&1; do
     echo "Waiting for yum lock before installing Jenkins..."
     sleep 10
@@ -50,7 +59,6 @@ done
 
 sudo yum install -y jenkins
 
-# Ensure Jenkins has proper permissions
 echo "Setting Jenkins permissions..."
 sudo chown -R jenkins:jenkins /var/lib/jenkins /var/log/jenkins /var/cache/jenkins
 sudo chmod -R 755 /var/lib/jenkins
