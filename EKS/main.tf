@@ -14,6 +14,7 @@ provider "kubectl" {
   load_config_file       = false
 }
 
+# VPC module to create VPC, subnets, etc.
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -43,13 +44,13 @@ module "vpc" {
   }
 }
 
+# EKS module to create the EKS cluster
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.31"
 
   cluster_name    = "my-eks-cluster"
-  cluster_version = "1.29" # You can change to 1.31 if you want, but ensure your region supports it
-
+  cluster_version = "1.29" # Change to your desired version
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -75,24 +76,27 @@ module "eks" {
   }
 }
 
-module "eks_aws_auth" {
-  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-  version = "~> 20.31"
+# AWS authentication via IAM user for Kubernetes access
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapUsers = jsonencode([
+      {
+        userarn  = "arn:aws:iam::767397667940:user/Mahmoodi"
+        username = "Mahmoodi"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
 
   depends_on = [module.eks]
-
-  manage_aws_auth_configmap = true
-
-  aws_auth_users = [
-    {
-      userarn  = "arn:aws:iam::767397667940:user/Mahmoodi"
-      username = "mahmoodi"
-      groups   = ["system:masters"]
-    }
-  ]
 }
 
-# Optional: EKS admin role and policy (you can remove if not used)
+# Optional: Create IAM role for EKS operations (useful for your admin tasks)
 resource "aws_iam_role" "Terraform_eks_role" {
   name = "mahmoodi-eks-role"
 
@@ -112,6 +116,7 @@ resource "aws_iam_role" "Terraform_eks_role" {
 EOF
 }
 
+# Create IAM policy to manage Kubernetes and EKS resources
 resource "aws_iam_policy" "eks_admin_policy" {
   name        = "eks-admin-policy"
   description = "Policy for Terraform to manage Kubernetes and run Nginx"
@@ -148,6 +153,7 @@ resource "aws_iam_policy" "eks_admin_policy" {
 EOF
 }
 
+# Attach the IAM policy to the role
 resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
   policy_arn = aws_iam_policy.eks_admin_policy.arn
   role       = aws_iam_role.Terraform_eks_role.name
